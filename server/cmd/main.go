@@ -10,7 +10,7 @@ func main() {
 	// helath check endpoint
 	apiPrefix.GET("/health", func(context *gin.Context) {
 		context.JSON(200, gin.H{
-			"status": "OK",
+			"status": "OK bang",
 		})
 	})
 
@@ -24,7 +24,7 @@ func main() {
     // not found handler
 	mainRouter.NoRoute(func(context *gin.Context) {
 		context.JSON(404, gin.H{
-			"error": "Endpoint not found",
+			"error": "Endpoint not found woii",
 		})
 	});
 
