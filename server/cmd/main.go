@@ -1,8 +1,15 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/ahmadammarm/courses-management/backend/config"
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
+
+    config.LoadEnv()
+
+
 	mainRouter := gin.Default()
 	apiPrefix := mainRouter.Group("/api")
 
@@ -28,5 +35,5 @@ func main() {
 		})
 	});
 
-	mainRouter.Run(":8080")
+	mainRouter.Run(":" + config.GetEnv("APP_PORT", "8080"))
 }
