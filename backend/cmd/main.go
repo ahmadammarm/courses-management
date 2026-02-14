@@ -7,12 +7,12 @@ import (
 
 func main() {
 
-    config.LoadEnv()
+	config.LoadEnv()
 
+	appPort := config.GetEnv("APP_PORT")
 
 	mainRouter := gin.Default()
 	apiPrefix := mainRouter.Group("/api")
-
 
 	// helath check endpoint
 	apiPrefix.GET("/health", func(context *gin.Context) {
@@ -28,12 +28,12 @@ func main() {
 		})
 	})
 
-    // not found handler
+	// not found handler
 	mainRouter.NoRoute(func(context *gin.Context) {
 		context.JSON(404, gin.H{
 			"error": "Endpoint not found woii",
 		})
-	});
+	})
 
-	mainRouter.Run(":" + config.GetEnv("APP_PORT", "8080"))
+	mainRouter.Run(":" + appPort)
 }

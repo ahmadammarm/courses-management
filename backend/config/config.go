@@ -7,19 +7,17 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// load environment variables from .env file
+// load environment variables from .env file, if it exists.
 func LoadEnv() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
+	if err := godotenv.Load(); err != nil {
+		log.Printf("Warning: .env file not found, using system environment variables")
 	}
 }
 
-// get environment variable with fallback value
-func GetEnv(key, fallback string) string {
-	value, exists := os.LookupEnv(key)
-	if !exists {
-		return fallback
+// get environment variable by key, return empty string if not found
+func GetEnv(key string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
 	}
-	return value
+	return ""
 }
