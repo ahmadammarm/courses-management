@@ -2,12 +2,15 @@ package main
 
 import (
 	"github.com/ahmadammarm/courses-management/backend/config"
+	"github.com/ahmadammarm/courses-management/backend/db"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 
 	config.LoadEnv()
+
+    db.DatabaseConnect()
 
 	appPort := config.GetEnv("APP_PORT")
 
