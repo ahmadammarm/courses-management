@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/ahmadammarm/courses-management/backend/config"
 	"github.com/ahmadammarm/courses-management/backend/db"
+	"github.com/ahmadammarm/courses-management/backend/routes"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,6 +38,11 @@ func main() {
 			"error": "Endpoint not found woii",
 		})
 	})
+
+    // auth routes
+    authGroup := apiPrefix.Group("/auth")
+    routes.AuthRoutes(authGroup)
+
 
 	mainRouter.Run(":" + appPort)
 }

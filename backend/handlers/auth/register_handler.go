@@ -62,6 +62,8 @@ func InstructorRegisterHandler(context *gin.Context) {
 			Username:  instructor.Username,
 			Email:     instructor.Email,
 			Expertise: instructor.Expertise,
+			CreatedAt: instructor.CreatedAt.Format("2006-01-02 15:04:05"),
+			UpdatedAt: instructor.UpdatedAt.Format("2006-01-02 15:04:05"),
 		},
 	})
 }

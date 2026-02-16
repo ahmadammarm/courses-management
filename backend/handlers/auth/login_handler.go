@@ -28,7 +28,7 @@ func InstructorLoginHandler(context *gin.Context) {
 
 	database := db.Database
 
-	if err := database.Where("email = ?", request.Email).First(&request).Error; err != nil {
+	if err := database.Where("email = ?", request.Email).First(&instructor).Error; err != nil {
 		context.JSON(http.StatusUnauthorized, utils.ErrorResponse{
 			Success: false,
 			Status:  "error",
@@ -38,7 +38,7 @@ func InstructorLoginHandler(context *gin.Context) {
 		return
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(request.Password), []byte(request.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(instructor.Password), []byte(request.Password)); err != nil {
 		context.JSON(http.StatusUnauthorized, utils.ErrorResponse{
 			Success: false,
 			Status:  "error",
@@ -60,6 +60,8 @@ func InstructorLoginHandler(context *gin.Context) {
 			Username:  instructor.Username,
 			Email:     instructor.Email,
 			Expertise: instructor.Expertise,
+            CreatedAt: instructor.CreatedAt.String(),
+			UpdatedAt: instructor.UpdatedAt.String(),
 			Token:     &accessToken,
 		},
 	})
