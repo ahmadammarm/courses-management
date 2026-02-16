@@ -50,3 +50,7 @@ func ErrorMessageTranslate(err error) map[string]string {
 	return errorMaps
 
 }
+
+func IsDuplicateEntryError(err error) bool {
+	return err != nil && strings.Contains(err.Error(), "Duplicate entry")
+}
