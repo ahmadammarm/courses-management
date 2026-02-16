@@ -43,6 +43,10 @@ func main() {
     authGroup := apiPrefix.Group("/auth")
     routes.AuthRoutes(authGroup)
 
+    // courses routes
+    coursesGroup := apiPrefix.Group("/courses")
+    routes.CoursesRoutesSetup(coursesGroup)
+
 
 	mainRouter.Run(":" + appPort)
 }
