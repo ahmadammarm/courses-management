@@ -8,6 +8,7 @@ import (
 	"github.com/ahmadammarm/courses-management/backend/models"
 	"github.com/ahmadammarm/courses-management/backend/utils"
 	"github.com/gin-gonic/gin"
+    "github.com/nrednav/cuid2"
 )
 
 func InstructorRegisterHandler(context *gin.Context) {
@@ -25,6 +26,7 @@ func InstructorRegisterHandler(context *gin.Context) {
 	}
 
 	instructor := models.Instructor{
+        ID: cuid2.Generate(),
 		Name:      request.Name,
 		Username:  request.Username,
 		Email:     request.Email,

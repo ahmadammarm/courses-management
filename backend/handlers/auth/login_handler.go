@@ -12,7 +12,6 @@ import (
 )
 
 func InstructorLoginHandler(context *gin.Context) {
-
 	var request = dto.InstructorLoginRequest{}
 	var instructor = models.Instructor{}
 
@@ -48,7 +47,17 @@ func InstructorLoginHandler(context *gin.Context) {
 		return
 	}
 
-	accessToken := utils.JWTGenerate(instructor.Username)
+	accessToken, err := utils.JWTGenerate(instructor.ID, instructor.Username)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, utils.ErrorResponse{
+			Success: false,
+			Status:  "error",
+			Message: "Error generating access token",
+			Errors:  utils.ErrorMessageTranslate(err),
+		})
+		return
+	}
 
 	context.JSON(http.StatusOK, utils.SuccessResponse{
 		Success: true,
@@ -60,7 +69,7 @@ func InstructorLoginHandler(context *gin.Context) {
 			Username:  instructor.Username,
 			Email:     instructor.Email,
 			Expertise: instructor.Expertise,
-            CreatedAt: instructor.CreatedAt.String(),
+			CreatedAt: instructor.CreatedAt.String(),
 			UpdatedAt: instructor.UpdatedAt.String(),
 			Token:     &accessToken,
 		},

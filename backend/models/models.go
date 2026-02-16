@@ -27,7 +27,6 @@ type Course struct {
 	Content      string         `json:"content" gorm:"type:longtext"`
 	Status       string         `json:"status" gorm:"type:varchar(50);default:'draft'"`
 	InstructorID string         `json:"instructor_id" gorm:"type:varchar(30);index"`
-	Instructor   Instructor     `json:"instructor" gorm:"foreignKey:InstructorID;references:ID"`
 	CreatedAt    time.Time      `json:"created_at"`
 	UpdatedAt    time.Time      `json:"updated_at"`
 	DeletedAt    gorm.DeletedAt `gorm:"index"`
