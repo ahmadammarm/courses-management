@@ -15,7 +15,7 @@ import (
 func GetAllCoursesHandler(context *gin.Context) {
 	var courses []models.Course
 
-	err := db.Database.Find(&courses).Error
+	err := db.Database.Select("id", "title", "description", "slug", "content", "status", "instructor_id", "created_at", "updated_at").Find(&courses).Error
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, utils.ErrorResponse{
@@ -161,5 +161,160 @@ func CreateCourseHandler(context *gin.Context) {
 			CreatedAt:    course.CreatedAt.Format("2006-01-02 15:04:05"),
 			UpdatedAt:    course.UpdatedAt.Format("2006-01-02 15:04:05"),
 		},
+	})
+}
+
+func GetCourseByIDHandler(context *gin.Context) {
+	courseID := context.Param("id")
+
+	var course models.Course
+
+	err := db.Database.Select("id", "title", "description", "slug", "content", "status", "instructor_id", "created_at", "updated_at").First(&course, "id = ?", courseID).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			context.JSON(http.StatusNotFound, utils.ErrorResponse{
+				Success: false,
+				Status:  "error",
+				Message: "Course not found",
+			})
+		} else {
+			context.JSON(http.StatusInternalServerError, utils.ErrorResponse{
+				Success: false,
+				Status:  "error",
+				Message: "Error retrieving course",
+				Errors:  utils.ErrorMessageTranslate(err),
+			})
+		}
+		return
+	}
+
+	context.JSON(http.StatusOK, utils.SuccessResponse{
+		Success: true,
+		Status:  "success",
+		Message: "Course retrieved successfully",
+		Data:    course,
+	})
+}
+
+func UpdateCourseHandler(context *gin.Context) {
+	courseID := context.Param("id")
+	instructorID := context.GetString("instructor_id")
+
+	if instructorID == "" {
+		context.JSON(http.StatusUnauthorized, utils.ErrorResponse{
+			Success: false,
+			Status:  "error",
+			Message: "Unauthorized",
+		})
+		return
+	}
+
+	var request = dto.UpdateCourseRequest{}
+
+	if err := context.ShouldBindJSON(&request); err != nil {
+		context.JSON(http.StatusUnprocessableEntity, utils.ErrorResponse{
+			Success: false,
+			Status:  "error",
+			Message: "Error validating request",
+			Errors:  utils.ErrorMessageTranslate(err),
+		})
+		return
+	}
+
+	var course models.Course
+
+	err := db.Database.First(&course, "id = ? AND instructor_id = ?", courseID, instructorID).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			context.JSON(http.StatusNotFound, utils.ErrorResponse{
+				Success: false,
+				Status:  "error",
+				Message: "Course not found",
+			})
+		} else {
+			context.JSON(http.StatusInternalServerError, utils.ErrorResponse{
+				Success: false,
+				Status:  "error",
+				Message: "Error retrieving course",
+				Errors:  utils.ErrorMessageTranslate(err),
+			})
+		}
+		return
+	}
+
+	course.Title = request.Title
+	course.Description = request.Description
+	course.Content = request.Content
+	course.Status = request.Status
+
+	if err := db.Database.Save(&course).Error; err != nil {
+		context.JSON(http.StatusInternalServerError, utils.ErrorResponse{
+			Success: false,
+			Status:  "error",
+			Message: "Error updating course",
+			Errors:  utils.ErrorMessageTranslate(err),
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, utils.SuccessResponse{
+		Success: true,
+		Status:  "success",
+		Message: "Course updated successfully",
+		Data:    course,
+	})
+}
+
+func DeleteCourseHandler(context *gin.Context) {
+	courseID := context.Param("id")
+	instructorID := context.GetString("instructor_id")
+
+	if instructorID == "" {
+		context.JSON(http.StatusUnauthorized, utils.ErrorResponse{
+			Success: false,
+			Status:  "error",
+			Message: "Unauthorized",
+		})
+		return
+	}
+
+	var course models.Course
+
+	err := db.Database.First(&course, "id = ? AND instructor_id = ?", courseID, instructorID).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			context.JSON(http.StatusNotFound, utils.ErrorResponse{
+				Success: false,
+				Status:  "error",
+				Message: "Course not found",
+			})
+		} else {
+			context.JSON(http.StatusInternalServerError, utils.ErrorResponse{
+				Success: false,
+				Status:  "error",
+				Message: "Error retrieving course",
+				Errors:  utils.ErrorMessageTranslate(err),
+			})
+		}
+		return
+	}
+
+	if err := db.Database.Delete(&course).Error; err != nil {
+		context.JSON(http.StatusInternalServerError, utils.ErrorResponse{
+			Success: false,
+			Status:  "error",
+			Message: "Error deleting course",
+			Errors:  utils.ErrorMessageTranslate(err),
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, utils.SuccessResponse{
+		Success: true,
+		Status:  "success",
+		Message: "Course deleted successfully",
 	})
 }
