@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/ahmadammarm/courses-management/backend/config"
 	"github.com/ahmadammarm/courses-management/backend/db"
+	"github.com/ahmadammarm/courses-management/backend/middlewares"
 	"github.com/ahmadammarm/courses-management/backend/routes"
 	"github.com/gin-gonic/gin"
 )
@@ -11,11 +12,14 @@ func main() {
 
 	config.LoadEnv()
 
-    db.DatabaseConnect()
+	db.DatabaseConnect()
 
 	appPort := config.GetEnv("APP_PORT")
 
 	mainRouter := gin.Default()
+
+	mainRouter.Use(middlewares.CORSMiddleware())
+
 	apiPrefix := mainRouter.Group("/api")
 
 	// helath check endpoint
@@ -39,14 +43,13 @@ func main() {
 		})
 	})
 
-    // auth routes
-    authGroup := apiPrefix.Group("/auth")
-    routes.AuthRoutes(authGroup)
+	// auth routes
+	authGroup := apiPrefix.Group("/auth")
+	routes.AuthRoutes(authGroup)
 
-    // courses routes
-    coursesGroup := apiPrefix.Group("/courses")
-    routes.CoursesRoutesSetup(coursesGroup)
-
+	// courses routes
+	coursesGroup := apiPrefix.Group("/courses")
+	routes.CoursesRoutesSetup(coursesGroup)
 
 	mainRouter.Run(":" + appPort)
 }
