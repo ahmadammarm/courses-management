@@ -1,13 +1,5 @@
 <script setup lang="ts">
 
-import { useRouter } from "vue-router";
-
-
-const router = useRouter();
-
-const handleRedirect = (path: string) => {
-	router.push(path);
-}
 </script>
 
 <template>
@@ -23,10 +15,10 @@ const handleRedirect = (path: string) => {
 			</div>
 
 			<div class="flex items-center gap-3">
-				<button @click="handleRedirect('/login')"
-					class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition">Login</button>
-				<button @click="handleRedirect('/register')"
-					class="px-4 py-2 rounded-lg border border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition">Register</button>
+				<router-link to="/login"
+					class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition inline-block">Login</router-link>
+				<router-link to="/register"
+					class="px-4 py-2 rounded-lg border border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition inline-block">Register</router-link>
 			</div>
 		</div>
 	</header>
