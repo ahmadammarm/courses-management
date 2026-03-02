@@ -49,6 +49,6 @@ export const useLogout = (): (() => void) => {
 		Cookies.remove('user');
 		Cookies.remove('token');
 
-		router.push({ name: 'Login' });
+		router.push('/login');
 	}
 }
