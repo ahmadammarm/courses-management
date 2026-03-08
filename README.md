@@ -4,8 +4,8 @@ A web application for instructors to create and manage their courses.
 
 ## Tech Stack
 
-**Backend:** Go, Gin, GORM, JWT
-**Frontend:** Vue 3, TypeScript, Vite, Tailwind CSS, TanStack Vue Query
+- **Backend:** Go, Gin, GORM, JWT, MySQL
+- **Frontend:** Vue 3, TypeScript, Vite, Tailwind CSS, TanStack Vue Query
 
 ## Project Structure
 
