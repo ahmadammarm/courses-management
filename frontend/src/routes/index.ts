@@ -63,7 +63,7 @@ const router = createRouter({
 });
 
 // Navigation guard: protect /dashboard and its subpaths when not authenticated
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, next) => {
 	const token = Cookies.get('token');
 	const loggedIn = !!token && !isTokenExpired(token);
 
