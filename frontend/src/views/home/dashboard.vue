@@ -15,8 +15,7 @@ const logout = useLogout();
 			</button>
 		</template>
 
-		<h1 class="text-3xl font-bold mb-4">Welcome to the Dashboard</h1>
-		<p class="text-lg mb-6">This is your dashboard where you can manage your courses and view your progress.</p>
+		<router-view />
 	</DashboardLayout>
 </template>
 

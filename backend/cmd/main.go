@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/ahmadammarm/courses-management/backend/config"
 	"github.com/ahmadammarm/courses-management/backend/db"
-	"github.com/ahmadammarm/courses-management/backend/middlewares"
 	"github.com/ahmadammarm/courses-management/backend/routes"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,9 +16,22 @@ func main() {
 
 	appPort := config.GetEnv("APP_PORT")
 
-	mainRouter := gin.Default()
+	// Use gin.New() instead of gin.Default() for more control
+	mainRouter := gin.New()
 
-	mainRouter.Use(middlewares.CORSMiddleware())
+	// Add logger and recovery middleware
+	mainRouter.Use(gin.Logger())
+	mainRouter.Use(gin.Recovery())
+
+	// CORS Middleware - must be first
+	mainRouter.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173", "http://127.0.0.1:5173", "*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization", "X-Requested-With"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * 3600,
+	}))
 
 	apiPrefix := mainRouter.Group("/api")
 

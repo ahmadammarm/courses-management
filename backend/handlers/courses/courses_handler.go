@@ -66,6 +66,7 @@ func GetAllCoursesByInstructorHandler(context *gin.Context) {
         `).
 		Joins("JOIN instructors ON instructors.id = courses.instructor_id").
 		Where("courses.instructor_id = ?", instructorID).
+		Where("courses.deleted_at IS NULL").
 		Scan(&courses).Error
 
 	if err != nil {
@@ -169,7 +170,7 @@ func GetCourseByIDHandler(context *gin.Context) {
 
 	var course models.Course
 
-	err := db.Database.Select("id", "title", "description", "slug", "content", "status", "instructor_id", "created_at", "updated_at").First(&course, "id = ?", courseID).Error
+	err := db.Database.Select("id", "title", "description", "slug", "content", "status", "instructor_id", "created_at", "updated_at").Where("deleted_at IS NULL").First(&course, "id = ?", courseID).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -224,7 +225,7 @@ func UpdateCourseHandler(context *gin.Context) {
 
 	var course models.Course
 
-	err := db.Database.First(&course, "id = ? AND instructor_id = ?", courseID, instructorID).Error
+	err := db.Database.Where("deleted_at IS NULL").First(&course, "id = ? AND instructor_id = ?", courseID, instructorID).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -282,7 +283,7 @@ func DeleteCourseHandler(context *gin.Context) {
 
 	var course models.Course
 
-	err := db.Database.First(&course, "id = ? AND instructor_id = ?", courseID, instructorID).Error
+	err := db.Database.Where("deleted_at IS NULL").First(&course, "id = ? AND instructor_id = ?", courseID, instructorID).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {

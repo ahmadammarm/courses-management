@@ -22,6 +22,38 @@ const routes: RouteRecordRaw[] = [
 		path: "/dashboard",
 		name: "Dashboard",
 		component: () => import("../views/home/dashboard.vue"),
+		children: [
+			{
+				path: "",
+				name: "DashboardOverview",
+				component: () => import("../views/dashboard/overview.vue"),
+			},
+			{
+				path: "courses",
+				name: "MyCourses",
+				component: () => import("../views/dashboard/courses.vue"),
+			},
+			{
+				path: "create",
+				name: "CreateCourse",
+				component: () => import("../views/dashboard/create-course.vue"),
+			},
+			{
+				path: "courses/:id/edit",
+				name: "EditCourse",
+				component: () => import("../views/dashboard/edit-course.vue"),
+			},
+			{
+				path: "courses/:id",
+				name: "ViewCourse",
+				component: () => import("../views/dashboard/view-course.vue"),
+			},
+			{
+				path: "profile",
+				name: "Profile",
+				component: () => import("../views/dashboard/profile.vue"),
+			},
+		],
 	},
 ];
 
@@ -35,8 +67,8 @@ router.beforeEach((to, from, next) => {
 	const token = Cookies.get('token');
 	const loggedIn = !!token && !isTokenExpired(token);
 
-	// Protect dashboard routes
-	if (to.path === '/dashboard' || to.path.startsWith('/dashboard/')) {
+	// Protect dashboard routes (including nested routes)
+	if (to.path.startsWith('/dashboard')) {
 		if (!loggedIn) {
 			Cookies.remove('token');
 			Cookies.remove('user');
